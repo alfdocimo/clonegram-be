@@ -10,7 +10,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import IUser from './interface/user.interface';
-import { CreateUser } from './dto/CreateUser.dto';
+import { CreateUser } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')

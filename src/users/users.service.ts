@@ -1,18 +1,10 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
-import IUser, { genderTypes } from './interface/user.interface';
+import IUser from './interface/user.interface';
+import mockedUsersCollection from './__tests__/__mocks__/users-collection.mock';
 
 @Injectable()
 export class UsersService {
-  private readonly users: IUser[] = [
-    {
-      id: '1234',
-      username: 'alfdocimo',
-      name: 'Alfredo',
-      middleName: 'Narvaez',
-      age: 25,
-      gender: genderTypes.Male,
-    },
-  ];
+  private readonly users: IUser[] = mockedUsersCollection;
 
   findAll(): IUser[] {
     return this.users;
