@@ -1,16 +1,14 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
-import IUser from './interface/user.interface';
 import { User } from './schemas/user.schema';
-import mockedUsersCollection from './__tests__/__mocks__/users-collection.mock';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUser } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
-
-  private readonly users: IUser[] = mockedUsersCollection;
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) {}
 
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();
@@ -26,8 +24,8 @@ export class UsersService {
 
   async createUser(createUser: CreateUser): Promise<User> {
     try {
-      const createdUser = new this.userModel(createUser);
-      return createdUser.save();
+      const createdUser = this.userModel.create(createUser);
+      return createdUser;
     } catch {
       new HttpException(
         'Cant create User at this moment',

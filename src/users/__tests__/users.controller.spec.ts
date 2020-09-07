@@ -2,7 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from '../users.controller';
 import { UsersService } from '../users.service';
 import IUser, { genderTypes } from '../interface/user.interface';
-import mockUsersCollection from './__mocks__/users-collection.mock';
+import { getModelToken } from '@nestjs/mongoose';
+import { User } from '../schemas/user.schema';
+import UsersMockService from '../__tests__/users.mockService';
+import mockUsersCollection from '../__tests__/__mocks__/users-collection.mock';
+import { CreateUser } from '../dto/create-user.dto';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -11,15 +15,19 @@ describe('UsersController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
-      providers: [UsersService],
+      providers: [
+        UsersService,
+        {
+          provide: getModelToken(User.name),
+          useFactory: () => {
+            return new UsersMockService(mockUsersCollection);
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
     service = module.get<UsersService>(UsersService);
-
-    jest
-      .spyOn(service, 'findAll')
-      .mockImplementation(() => mockUsersCollection);
   });
 
   describe('[Get]', () => {
@@ -40,7 +48,7 @@ describe('UsersController', () => {
 
   describe('[Post]', () => {
     it('should add a user to the collection of users', async () => {
-      const newUser: IUser = {
+      const newUser: CreateUser = {
         id: '333',
         username: 'test_user',
         name: 'John',
@@ -51,7 +59,7 @@ describe('UsersController', () => {
 
       await controller.create(newUser);
 
-      expect(await controller.findOneById('333')).toBe(newUser);
+      expect(await controller.findOneById('333')).toEqual(newUser);
     });
   });
 
