@@ -12,18 +12,19 @@ import {
 import IUser from './interface/user.interface';
 import { CreateUser } from './dto/create-user.dto';
 import { UsersService } from './users.service';
+import { User } from './schemas/user.schema';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  async findAll(): Promise<IUser[]> {
+  async findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  async findOneById(@Param('id') id: string): Promise<IUser | HttpException> {
+  async findOneById(@Param('id') id: string): Promise<User | HttpException> {
     return this.usersService.findOneById(id);
   }
 
@@ -37,7 +38,7 @@ export class UsersController {
   async update(
     @Param('id') id: string,
     @Body() user: CreateUser,
-  ): Promise<void | HttpException> {
+  ): Promise<User | HttpException> {
     return this.usersService.updateUser(id, user);
   }
 
