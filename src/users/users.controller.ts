@@ -29,8 +29,8 @@ export class UsersController {
 
   @Post()
   @HttpCode(202)
-  async create(@Body() user: CreateUser): Promise<void> {
-    this.usersService.createUser(user);
+  async create(@Body() user: CreateUser): Promise<User> {
+    return this.usersService.createUser(user);
   }
 
   @Put(':id')
